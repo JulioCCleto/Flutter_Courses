@@ -56,16 +56,17 @@ class _HomeState extends State<Home> {
       key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
+        //Recuperar o último item excluido
+         _ultimaTarefaRemovida = _listaTarefas[index];
+
         //Remove item da lista
         _listaTarefas.removeAt(index);
         _salvarArquivo();
 
-        //Recuperar o último item excluido
-        _ultimaTarefaRemovida = _listaTarefas[index];
-
         //Snackbar
         final snackbar = SnackBar(
-          content: Text("Tarefa removida!!"),
+          content: Text("Tarefa removida!"),
+          duration: Duration(seconds: 7),
           action: SnackBarAction(
             label: "Desfazer",
             onPressed: () {
@@ -77,7 +78,6 @@ class _HomeState extends State<Home> {
               _salvarArquivo();
             },
           ),
-          duration: Duration(seconds: 7),
         );
 
         Scaffold.of(context).showSnackBar(snackbar);
@@ -111,7 +111,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
+    
   @override
   void initState() {
     super.initState();

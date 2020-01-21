@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
         //Recuperar o último item excluido
-         _ultimaTarefaRemovida = _listaTarefas[index];
+        _ultimaTarefaRemovida = _listaTarefas[index];
 
         //Remove item da lista
         _listaTarefas.removeAt(index);
@@ -111,7 +111,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-    
+
   @override
   void initState() {
     super.initState();

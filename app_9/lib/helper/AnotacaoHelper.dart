@@ -15,9 +15,7 @@ class AnotacaoHelper {
     return _anotacaoHelper;
   }
 
-
-  AnotacaoHelper._internal(){
-  }
+  AnotacaoHelper._internal(){}
 
   get db async{
     if( _db != null){

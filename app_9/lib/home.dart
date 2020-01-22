@@ -11,6 +11,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  Map<String, dynamic> _recuperarNotaRemovida = Map();
+
   TextEditingController _tituloController = TextEditingController();
   TextEditingController _descricaoController = TextEditingController();
 
@@ -23,22 +26,24 @@ class _HomeState extends State<Home> {
 
     if (anotacao == null) {
       //Salvar
-
       _tituloController.text = "";
       _descricaoController.text = "";
-      textoSalvarAtualizar = "Salvar";
+      textoSalvarAtualizar = "Adicionar";
     } else {
       //Atualizar
       _tituloController.text = anotacao.titulo;
       _descricaoController.text = anotacao.descricao;
-      textoSalvarAtualizar = "Atualizar";
+      textoSalvarAtualizar = "Editar";
     }
 
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("$textoSalvarAtualizar anotação"),
+            title: Text(
+              "$textoSalvarAtualizar Nota",
+              style: TextStyle(color: Colors.grey[800], fontSize: 20),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -54,6 +59,9 @@ class _HomeState extends State<Home> {
                       labelStyle:
                           TextStyle(fontSize: 20, color: Colors.grey[700]),
                       hintText: "Digite o título..."),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10),
                 ),
                 TextField(
                   controller: _descricaoController,
@@ -75,6 +83,7 @@ class _HomeState extends State<Home> {
                 child: Text(
                   "Cancelar",
                   style: TextStyle(
+                    color: Color(0xFF961b1b),
                     fontSize: 20,
                   ),
                 ),
@@ -87,6 +96,7 @@ class _HomeState extends State<Home> {
                 child: Text(
                   textoSalvarAtualizar,
                   style: TextStyle(
+                    color: Colors.grey[800],
                     fontSize: 20,
                   ),
                 ),
@@ -143,7 +153,7 @@ class _HomeState extends State<Home> {
   _formartarData(String data) {
     initializeDateFormatting("pt_BR");
 
-    var formater = DateFormat("dd/MM/yyyy HH:m");
+    var formater = DateFormat("dd/MM/yyyy HH:mm");
 
     DateTime dataConvertida = DateTime.parse(data);
     String dataFormatada = formater.format(dataConvertida);
@@ -191,7 +201,6 @@ class _HomeState extends State<Home> {
             itemCount: _anotacoes.length,
             itemBuilder: (context, index) {
               final anotacao = _anotacoes[index];
-
               return GestureDetector(
                 onLongPress: () {
                   _exibirTelaCadastro(anotacao: anotacao);
@@ -213,10 +222,30 @@ class _HomeState extends State<Home> {
                     ),
                     direction: DismissDirection.endToStart,
                     onDismissed: (direction) {
+
+                      _recuperarNotaRemovida = _anotacoes[index].toMap();
+
                       _removerAnotacao(anotacao.id);
                       setState(() {
                         _anotacoes.removeAt(index);
                       });
+
+                      final snackBar = SnackBar(
+                        content: Text(
+                          'Nota removida! Deseja desfazer a ação?',                       
+                        ),
+                        action: SnackBarAction(
+                          label: "Desfazer",
+                          onPressed: () {
+                            setState(() {
+                              print(_recuperarNotaRemovida);
+                            });
+                          }
+                  
+                        ),
+                      );
+
+                      Scaffold.of(context).showSnackBar(snackBar);
                     },
                     key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
                     child: ListTile(
